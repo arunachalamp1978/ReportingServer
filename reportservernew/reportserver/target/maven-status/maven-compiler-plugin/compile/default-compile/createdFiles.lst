@@ -1,0 +1,9 @@
+org\arun\server\reportserver\model\ClientReport.class
+com\arun\project\report\builder\Report.class
+com\arun\project\util\StringUtil.class
+com\arun\project\report\builder\ReportBuilder.class
+com\arun\project\report\builder\ReportProperties.class
+com\arun\project\report\server\BootStrap.class
+com\arun\project\report\builder\ReportEnum.class
+com\arun\project\report\processor\ReportServer.class
+com\arun\project\report\builder\CSVBuilder.class

@@ -1,0 +1,6 @@
+2018-07-31 18:53:59 INFO  BootStrap:21 - Arguments : [input.txt, output2.csv, 20100820]
+2018-07-31 18:53:59 INFO  CSVBuilder:79 - Initialized data Successfully
+2018-07-31 18:53:59 DEBUG CSVBuilder:161 - CSV Written Successfully
+2018-07-31 18:53:59 INFO  CSVBuilder:117 - SUCCESS
+2018-07-31 18:53:59 DEBUG BootStrap:44 - Report Status : : SUCCESS
+Report Status : SUCCESS

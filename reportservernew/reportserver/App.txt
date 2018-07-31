@@ -1,0 +1,295 @@
+package com.arun.project.report.server;
+
+import java.io.IOException;
+import java.text.ParseException;
+
+import com.arun.project.report.processor.ReportProcessor;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args ) throws IOException
+    {
+        System.out.println( "Hello World!" );
+        ReportProcessor rpt = null;
+		
+		rpt = new ReportProcessor();
+        rpt.execute();
+    }
+    
+    
+   
+    
+}
+
+
+package com.arun.project.report.model;
+
+import java.util.Date;
+
+public class ClientReport {
+	private String clientInformation;
+	private String productInformation;
+	private Integer totalTransactionAmt;
+	private String transDate;
+	
+	public ClientReport()
+	{
+		
+	}
+			
+	public String getClientInformation() {
+		return clientInformation;
+	}
+	public void setClientInformation(String clientInformation) {
+		this.clientInformation = clientInformation;
+	}
+	public String getProductInformation() {
+		return productInformation;
+	}
+	public void setProductInformation(String productInformation) {
+		this.productInformation = productInformation;
+	}
+	public Integer getTotalTransactionAmt() {
+		return totalTransactionAmt;
+	}
+	public void setTotalTransactionAmt(Integer totalTransactionAmt) {
+		this.totalTransactionAmt = totalTransactionAmt;
+	}
+	public String getTransDate() {
+		return transDate;
+	}
+	public void setTransDate(String transDate) {
+		this.transDate = transDate;
+	}
+	public ClientReport(String clientInformation, String productInformation, Integer totalTransactionAmt,
+			String transDate) {
+		this.clientInformation = clientInformation;
+		this.productInformation = productInformation;
+		this.totalTransactionAmt = totalTransactionAmt;
+		this.transDate = transDate;
+	}
+
+}
+
+
+
+package com.arun.project.report.processor;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import com.arun.project.report.model.ClientReport;
+import com.opencsv.CSVWriter;
+
+import jdk.management.resource.internal.inst.SocketOutputStreamRMHooks;
+
+public class ReportProcessor {
+
+		List<ClientReport> lstClientRpt;
+		
+		public ReportProcessor() 
+		{
+			initialize();
+		}
+	
+		public void initialize() 
+		{
+			lstClientRpt = new ArrayList<ClientReport>();
+			lstClientRpt.add(new ClientReport("CL1","PR1",123, "1992-07-26"));
+			lstClientRpt.add(new ClientReport("CL1","PR1",567, "1992-07-26"));
+			lstClientRpt.add(new ClientReport("CL2","PR1",567, "1992-07-26"));
+			lstClientRpt.add(new ClientReport("CL1","PR2",-1, "1992-07-27"));
+			lstClientRpt.add(new ClientReport("CL1","PR3",345, "1992-07-28"));
+			lstClientRpt.add(new ClientReport("CL2","PR3",345, "1992-07-28"));
+			
+		}
+		public String execute() throws IOException 
+		{
+			 singleLevelGrouping(lstClientRpt);
+			 return null;
+		}
+		
+		public void singleLevelGrouping(List<ClientReport> lstClientRpt) throws IOException { 
+			String yourDate = "1992-07-26";
+			final Map<String, List<ClientReport>> grp_DT = lstClientRpt.stream()
+						.collect(
+								Collectors.groupingBy(ClientReport::getTransDate)); 
+			    System.out.println("Transactions in " + yourDate + " " + grp_DT.get(yourDate)); 
+			    
+			    Map<List<String>,List<ClientReport>> grp_CL_PR = lstClientRpt.stream()
+			    		.collect(Collectors.groupingBy( x -> {
+			    			return new ArrayList<String>(Arrays.asList(x.getClientInformation(),x.getProductInformation()));
+			    		}));
+			    
+			    
+			    grp_DT
+		        .entrySet()
+		        .stream()
+		        .forEach(p -> { System.out.println(p.getKey()) ; p.getValue().stream()
+		        .forEach(y-> {System.out.println(
+		        				y.getTransDate() + " " +
+		        				y.getClientInformation() + " "  +
+		        				y.getProductInformation() + " " +
+		        				y.getTotalTransactionAmt()); }
+		        				); 
+		        } );
+			    
+			    Map<List<String>,Integer> summary = lstClientRpt.stream()
+			    	    .collect(Collectors.groupingBy(
+			    	    				x -> new ArrayList<String>(
+			    	    							Arrays.asList(x.getTransDate(),
+			    	    											x.getClientInformation(),
+			    	    											x.getProductInformation())
+			    	    							),
+			    	    			Collectors.summingInt(ClientReport::getTotalTransactionAmt)));
+			    
+			    Map<List<String>, String> summaryCasted =
+			    		summary.entrySet().stream()
+			    	        .collect(Collectors.toMap(
+			    	            e -> e.getKey(),
+			    	            e -> (Integer.toString(e.getValue()))
+			    	        ));
+			    
+//			    	List<String> summaryCasted1 =
+//			    		summary.entrySet().stream()
+//			    	        .collect(Collectors.toList(
+//			    	            e -> e.getKey(),
+//			    	            e -> (Integer.toString(e.getValue()))
+//			    	        ));
+
+			    
+//			    summary.entrySet()
+//			    	.stream()
+//			    	.forEach(p -> { System.out.println(p.getKey() + " " + p.getValue());
+//			    	});
+			    
+//			    Set<Object> total = Stream.concat(
+//			    		summary.keySet().stream(), 
+//			    		summary.values().stream()
+//			    	).collect(Collectors.toSet());
+			    
+			    Set<Object> result = summaryCasted.entrySet()
+                        .stream()
+                        .flatMap(e -> Stream.of(  e.getKey(), e.getValue()))
+                        .collect(Collectors.toSet());
+			    
+			    result.forEach(r -> System.out.println(r));
+			    
+			    twoLevelGrouping(lstClientRpt);
+			    
+			    
+		} 
+		
+		
+		public void twoLevelGrouping(List<ClientReport> report) throws IOException {
+		     
+		     Map<String, Map<List<String>,Integer>> summary = lstClientRpt.stream()
+			    	    .collect(Collectors.groupingBy(ClientReport::getTransDate, Collectors.groupingBy(
+			    	    				x -> new ArrayList<String>(
+			    	    							Arrays.asList(x.getTransDate(),
+			    	    											x.getClientInformation(),
+			    	    											x.getProductInformation()
+			    	    							)),
+			    	    			Collectors.summingInt(ClientReport::getTotalTransactionAmt))));
+		     
+		     processRecords(summary);
+
+		}
+		
+		public void writeHashMapToCsv(ArrayList<String[]> records) throws IOException {
+			
+			try (
+					 Writer writer = Files.newBufferedWriter(Paths.get("output.csv"));
+					 CSVWriter csvWriter = new CSVWriter(writer,
+			                    CSVWriter.DEFAULT_SEPARATOR,
+			                    CSVWriter.NO_QUOTE_CHARACTER,
+			                    CSVWriter.DEFAULT_ESCAPE_CHARACTER,
+			                    CSVWriter.DEFAULT_LINE_END);
+						) {
+				csvWriter.writeAll(records);
+			}
+			
+		}
+		
+		public void processRecords(Map<String, Map<List<String>,Integer>> summary) throws IOException
+		{
+			
+			ArrayList<String[]> str = new ArrayList<>();
+			
+			 for (Entry<String, Map<List<String>, Integer>> entry : summary.entrySet()){
+				 
+		            Map<List<String>,Integer> ent = entry.getValue();
+		            str.add(new String[] {entry.getKey()}); // trick to convery String Array
+		           
+		            List<String> transaction= null;
+					 for (Entry<List<String>, Integer> entry1 : ent.entrySet()){
+						 
+						 transaction = entry1.getKey();
+						 transaction.remove(0);
+						 transaction.add(Integer.toString(entry1.getValue()));
+						 
+						 String[] s = transaction.toArray(new String[transaction.size()]);
+						 str.add(s);
+					 }
+					 
+		        }
+			 writeHashMapToCsv(str);
+		}
+		
+		
+		
+		
+}
+
+		
+		
+
+
+		
+		<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.arun.project</groupId>
+  <artifactId>reportserver</artifactId>
+  <packaging>jar</packaging>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>reportserver</name>
+  <url>http://maven.apache.org</url>
+  <properties>
+	<maven.compiler.source>1.8</maven.compiler.source>
+	<maven.compiler.target>1.8</maven.compiler.target>
+</properties>
+  
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+		  <groupId>com.opencsv</groupId>
+		  <artifactId>opencsv</artifactId>
+		  <version>4.2</version>
+	</dependency>
+  </dependencies>
+</project>

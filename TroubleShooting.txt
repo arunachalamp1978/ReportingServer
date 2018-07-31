@@ -1,0 +1,11 @@
+How to Build this Software/TroubleShooting
+
+Step 1: Install Maven (preferably latest version, if not already)
+Step 2: Decompress the package
+In the command line, go to the base folder "../\reportserver"
+Step 3: mvn clean
+Step 4: mvn compile
+Step 5: mvn package
+Step 6: java -jar target/reportserver-0.0.1-SNAPSHOT-jar-with-dependencies.jar "input.txt" "output3.csv", "20100820" (Optional, if not given, summary for all available days will be generated)
+Step 7: Refer to "output3.csv" which shows the Day wise summary for each Unique product.
+Step 8: For any issues while execution, please send "application.log" under base folder to support team for further investigation.

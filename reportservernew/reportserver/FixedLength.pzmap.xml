@@ -1,0 +1,45 @@
+<?xml version='1.0'?>
+<!DOCTYPE PZMAP SYSTEM
+    "pzfilereader.dtd" >
+<PZMAP>
+	<COLUMN name="RECORDCODE" length="3"/>
+    <COLUMN name="CLIENTTYPE" length="4"/>
+    <COLUMN name="CLIENTNUMBER" length="4" />
+    <COLUMN name="ACCOUNTNUMBER" length="4" />
+    <COLUMN name="SUBACCOUNTNUMBER" length="4" />
+    <COLUMN name="OPPOSITEPARTYCODE" length="6" />
+    
+    <COLUMN name="PRODUCT_GROUP_CODE" length="2" />
+    <COLUMN name="EXCHANGE_CODE" length="4" />
+    <COLUMN name="SYMBOL" length="6" />
+    <COLUMN name="EXPIRATION_DATE" length="8" />
+    
+    <COLUMN name="CURRENCY_CODE" length="3" />
+    <COLUMN name="MOVEMENT_CODE" length="2" />
+    <COLUMN name="BUY_SELL_CODE" length="1" />
+    <COLUMN name="QUANTITY_LONG_SIGN" length="1" />
+            
+    <COLUMN name="QUANTITY_LONG" length="10" />
+    <COLUMN name="QUANTITY_SHORT_SIGN" length="1" />
+    <COLUMN name="QUANTITY_SHORT" length="10" />
+    
+    
+    <COLUMN name="EXC_BROKER_FEE" length="12" />
+    <COLUMN name="EXC_BROKER_FEE_DC" length="1" />
+    <COLUMN name="EXC_BROKER_FEE_CURR_CODE" length="3" />
+    <COLUMN name="CLEARING_FEE_DEC" length="12" />
+    <COLUMN name="CLEARING_FEE_DC" length="1" />
+    <COLUMN name="CLEARING_FEE_CURR_CODE" length="3" />
+    <COLUMN name="COMMISSION" length="12" />
+    <COLUMN name="COMISSION_DC" length="1" />
+    <COLUMN name="COMISSION_CURR_CODE" length="3" />
+   
+  
+    
+    
+    <COLUMN name="TRANSACTION_DATE" length="8"/>
+    
+    
+    
+     
+</PZMAP> 
